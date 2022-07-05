@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import { upperCase, snakeCase } from "lodash";
 import { posix } from "path";
 import * as fs from "fs"; // In NodeJS: 'const fs = require('fs')'
+import * as crypto from "crypto";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -18,8 +19,9 @@ export function activate(context: vscode.ExtensionContext) {
   // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand("oppI18n.opp", async () => {
     const generateCode = (text: string) => {
+      const hash = crypto.createHash("md5").update(text).digest("hex");
       return text
-        ? `${upperCase(snakeCase(text.slice(0, 10)))}_${v4().slice(
+        ? `${upperCase(snakeCase(text.slice(0, 10)))}_${hash.slice(
             0,
             5
           )}`.replace(/\s/g, "_")
