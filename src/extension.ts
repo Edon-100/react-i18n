@@ -42,6 +42,8 @@ export function activate(context: vscode.ExtensionContext) {
         var text = editor!.document.getText(selection) || "";
         //
         text = text.replace(/['"]+/g, "");
+        text = text.replace(/\t/gm, "");
+        // text = text.replace(/\r?\n|\r/g, "");
 
         originText = text;
         i18nText = generateCode(text);

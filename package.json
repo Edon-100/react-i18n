@@ -2,7 +2,7 @@
   "name": "oppI18n",
   "displayName": "oppI18n",
   "description": "i18n replace",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.68.0"
   },
