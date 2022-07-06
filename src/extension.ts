@@ -37,18 +37,81 @@ export function activate(context: vscode.ExtensionContext) {
     }
     let originText = "";
     let i18nText = "";
+    let mode = 0;
     editor.edit((edit: vscode.TextEditorEdit) => {
       for (let selection of editor!.selections) {
         var text = editor!.document.getText(selection) || "";
-        //
-        text = text.replace(/['"]+/g, "");
-        text = text.replace(/\t/gm, "");
+
+        if (text.startsWith("'") || text.startsWith('"')) {
+          text = text.replace(/['"]+/g, ""); // 去除两边的 ' 或者 "
+          mode = 0;
+        } else if (
+          !text.startsWith("'") &&
+          !text.startsWith('"') &&
+          !text.startsWith("`")
+        ) {
+          mode = 2;
+          text = text.replace(/{/g, "{{");
+          text = text.replace(/}/g, "}}");
+          text = text.replace(/\t/gm, "").trim();
+        } else if (text.startsWith("`")) {
+          console.log("sssss");
+          mode = 1;
+          text = text.replace(/`/g, ""); // 去除两边的 `
+          text = text.replace(/\$/g, "");
+          text = text.replace(/{/g, "{{");
+          text = text.replace(/}/g, "}}");
+        } else {
+          // default
+          text = text.replace(/['"]+/g, "");
+          mode = 0;
+        }
+
+        // text = text.replace(/['"]+/g, "");
+        // text = text.replace(/\t/gm, "");
         // text = text.replace(/\r?\n|\r/g, "");
 
         originText = text;
         i18nText = generateCode(text);
-        edit.replace(selection, `t('${i18nText}')`);
-        // vscode.window.showInformationMessage(`success replace${i18nText}`);
+        if (mode === 2) {
+          var str;
+          var keyString = "";
+          var regex = /{{(.+?)}}/g;
+          const res = text.match(/{{(.+?)}}/);
+          if (res?.length) {
+            console.log("has");
+            while ((str = regex.exec(text))) {
+              const key = str[1];
+              keyString += `${key},`;
+            }
+            keyString = keyString.substr(0, keyString.length - 1);
+            console.log(keyString);
+            edit.replace(selection, `t('${i18nText}',{${keyString}})`);
+          } else {
+            edit.replace(selection, `t('${i18nText}')`);
+          }
+        } else if (mode === 1) {
+          var str;
+          var keyString = "";
+          var regex = /{{(.+?)}}/g;
+          const res = text.match(/{{(.+?)}}/);
+          if (res?.length) {
+            console.log("has");
+            while ((str = regex.exec(text))) {
+              const key = str[1];
+              keyString += `${key},`;
+            }
+            keyString = keyString.substr(0, keyString.length - 1);
+            console.log(keyString);
+            edit.replace(selection, `t('${i18nText}',{${keyString}})`);
+          } else {
+            edit.replace(selection, `t('${i18nText}')`);
+          }
+        } else {
+          console.log(111);
+          edit.replace(selection, `t('${i18nText}')`);
+        }
+        vscode.window.showInformationMessage(`success replace${i18nText}`);
       }
     });
     // const writeStr = "1€ is 1.12$ is 0.9£";
