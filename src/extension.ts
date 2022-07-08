@@ -103,13 +103,13 @@ export function activate(context: vscode.ExtensionContext) {
             }
             keyString = keyString.substr(0, keyString.length - 1);
             console.log(keyString);
-            edit.replace(selection, `t('${i18nText}',{${keyString}})`);
+            edit.replace(selection, `t('${i18nText}',{defaultValue: '${originText}', ${keyString}})`);
           } else {
-            edit.replace(selection, `t('${i18nText}')`);
+            edit.replace(selection, `t('${i18nText}', '${originText}')`);
           }
         } else {
           console.log(111);
-          edit.replace(selection, `t('${i18nText}')`);
+          edit.replace(selection, `t('${i18nText}', '${originText}')`);
         }
         vscode.window.showInformationMessage(`success replace${i18nText}`);
       }
@@ -118,7 +118,7 @@ export function activate(context: vscode.ExtensionContext) {
     // const writeData = Buffer.from(writeStr, "utf8");
 
     const folderUri = vscode.workspace.workspaceFolders?.[0].uri;
-    if (!folderUri) return;
+    if (!folderUri) {return;}
     const fileName = `${
       vscode.workspace.workspaceFolders?.[0].name ?? "prj"
     }-translation.json`;
