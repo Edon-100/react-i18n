@@ -4,7 +4,7 @@
   "repository": "https://github.com/Edon-100/react-i18n",
   "description": "i18n replace",
   "license": "PRIVATE",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.68.0"
   },
@@ -12,14 +12,14 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:oppI18n.opp"
+    "onCommand:transformToI18n"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "oppI18n.opp",
-        "title": "oppI18N"
+        "command": "transformToI18n",
+        "title": "vlt-i18n_transformToI18n"
       }
     ]
   },
@@ -32,7 +32,7 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js",
+    "test": "nodemon ./out/test/runTest.js",
     "make": "vsce package -o vlt-i18n.vsix",
     "mount": "yarn make;code --install-extension vlt-i18n.vsix;rm -rf vlt-i18n.vsix;",
     "mount:latest": "git pull; yarn mount;"
@@ -50,6 +50,7 @@
     "eslint": "^8.18.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
+    "nodemon": "^2.0.19",
     "ts-loader": "^9.3.1",
     "typescript": "^4.7.4",
     "vsce": "2.9.2",
